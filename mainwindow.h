@@ -15,6 +15,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+
+    void  displayImg();
+
 private slots:
     void OpenDir();
     void ClearOverlays();
@@ -26,6 +32,10 @@ private:
     int mBol ;
     QString mDirPath;
     QStringList mImageList;
+
+    int mDisplayIndex;
+    int mStIndex;
+    QLabel mImgDisplay;
 };
 
 #endif // MAINWINDOW_H

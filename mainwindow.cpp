@@ -4,19 +4,17 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    mBol(1)
+    mBol(1),mDisplayIndex(-1),mStIndex(-1)
 {
     ui->setupUi(this);
     mpMap = new QWebEngineView(ui->bkWidget);
-
-    //mpMap->setUrl(QUrl("/media/navinfo/Bak/CPP/QT/TrackDisplay/map.html")); //"http://map.baidu.com"));
 
     mpMap->load(QUrl("file:///media/navinfo/Bak/CPP/QT/TrackDisplay/map.html"));
 
     QSize sz = ui->bkWidget->size();
     mpMap->setGeometry(0,25,sz.width(),sz.height());
 
-
+    this->grabKeyboard();
     connect(ui->btnLoad,SIGNAL(clicked()),this,SLOT(OpenDir()));
     connect(ui->btnClear,SIGNAL(clicked()),this,SLOT(ClearOverlays()));
     connect(ui->btnDistance,SIGNAL(clicked()),this,SLOT(DistanceToolSwitch()));
@@ -30,12 +28,46 @@ void MainWindow::ClearOverlays()
     mDirPath.clear();
     ui->btnLoad->setText("LoadReal");
     mpMap->page()->runJavaScript(QString("clearOverlay()"));
+    mDisplayIndex = -1;
+    mStIndex      = -1;
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+    case Qt::Key_Left:
+        --mDisplayIndex;
+        displayImg();
+        break;
+    case Qt::Key_Right:
+        ++mDisplayIndex;
+        displayImg();
+        break;
+    }
+
+
+    QJsonArray index_json;
+    QJsonDocument index_doc;
+    QByteArray index_bytarray;
+
+    index_json.append(mDisplayIndex + 1);
+
+    index_doc.setArray(index_json);
+
+    index_bytarray = index_doc.toJson(QJsonDocument::Compact);
+
+    QString indexjson(index_bytarray);
+
+    QString cmd = QString("drawcurrentpt(\"%1\")")
+            .arg(indexjson);
+
+    mpMap->page()->runJavaScript(cmd);
+}
 void MainWindow::GetImage(const QString &str)
 {
     bool isok;
-    int index = str.toInt(&isok);
+    mDisplayIndex = str.toInt(&isok);
 
     if(isok)
     {
@@ -101,23 +133,33 @@ void MainWindow::GetImage(const QString &str)
 
             QString str = mImageList[0].mid(stindex + 1,edindex - stindex - 1);
 
-            int startindex = str.toInt(&isok);
+            mStIndex = str.toInt(&isok);
 
             if(isok)
             {
-                index = index - startindex;
-                assert(index < mImageList.count());
-                QPixmap image(mImageList[index]);
-                static QLabel label;
-                label.setAlignment(Qt::AlignCenter);
-                image.scaled(600,400,Qt::KeepAspectRatio);
-                label.setPixmap(image);
-                label.setScaledContents(true);
-                label.setWindowTitle(mImageList[index].mid(stindex + 1));
-                label.show();
+                mDisplayIndex = mDisplayIndex - mStIndex;
+                displayImg();
             }
         }
     }
+}
+
+
+void MainWindow::displayImg()
+{
+    if(mDisplayIndex < 0 ||
+       mImageList.empty())
+        return;
+    assert(mDisplayIndex < mImageList.count());
+    QPixmap image(mImageList[mDisplayIndex]);
+    mImgDisplay.setAlignment(Qt::AlignCenter);
+    image.scaled(400,250,Qt::KeepAspectRatio);
+    mImgDisplay.setPixmap(image);
+    mImgDisplay.setScaledContents(true);
+    this->move(0,0);
+    mImgDisplay.move(this->x() + this->width() - 100,this->y());
+    mImgDisplay.setWindowTitle(mImageList[mDisplayIndex].mid(mStIndex + 1));
+    mImgDisplay.show();
 }
 
 void MainWindow::DistanceToolSwitch()
