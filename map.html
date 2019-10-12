@@ -56,7 +56,7 @@ var realtrack = [];   //truth    point
 var esttrack  = [];   //estimate point
 var premarker;
 function drawcurrentpt( index_str )
-{
+{//point select
 
     var index = index_str.substring(1,index_str.length-1);
 
@@ -72,8 +72,7 @@ function drawcurrentpt( index_str )
         if( esttrack[i].id == index )
         {
             var infoWindow = new BMap.InfoWindow(
-                                      'id:'  + i + '\n' +
-                                      'lon:' + esttrack[i].lon + '\n' +
+                                      'lon:' + esttrack[i].lng + '\n' +
                                       'lat:' + esttrack[i].lat + '\n' +
                                       'resx' + esttrack[i].resx+ '\n' +
                                       'resy' + esttrack[i].resy

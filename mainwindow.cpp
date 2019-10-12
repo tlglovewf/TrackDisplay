@@ -138,6 +138,7 @@ void MainWindow::GetImage(const QString &str)
             if(isok)
             {
                 mDisplayIndex = mDisplayIndex - mStIndex;
+                mImgDisplay.move(this->x() + (static_cast<int>(this->width()) >> 1),this->y());
                 displayImg();
             }
         }
@@ -153,12 +154,13 @@ void MainWindow::displayImg()
     assert(mDisplayIndex < mImageList.count());
     QPixmap image(mImageList[mDisplayIndex]);
     mImgDisplay.setAlignment(Qt::AlignCenter);
-    image.scaled(400,250,Qt::KeepAspectRatio);
+    image.scaled(400,this->height(),Qt::KeepAspectRatio);
     mImgDisplay.setPixmap(image);
     mImgDisplay.setScaledContents(true);
     this->move(0,0);
-    mImgDisplay.move(this->x() + this->width() - 100,this->y());
-    mImgDisplay.setWindowTitle(mImageList[mDisplayIndex].mid(mStIndex + 1));
+    QString strTitle = mImageList[mDisplayIndex].right(12);
+
+    mImgDisplay.setWindowTitle(strTitle);
     mImgDisplay.show();
 }
 
