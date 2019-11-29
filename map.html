@@ -117,6 +117,8 @@ function showarray(numlist,num2list,flnms,isreal,resx,resy)                    /
          point.id = fname_list[i];
          point.resx = resx_list[i];
          point.resy = resy_list[i];
+	　point.olng = num_list[i];
+	 point.olat = num2_list[i];
          tracelist.push(point);                                  //将每个点压入数组
     }
 
@@ -149,14 +151,14 @@ function showarray(numlist,num2list,flnms,isreal,resx,resy)                    /
 
     points.addEventListener('click', function(e){
     var opts = {
-         width : 200,
+         width : 180,
          height: 100,
          title : 'pic:' + e.point.id,
          enableMessage: true
     }
     var infoWindow = new BMap.InfoWindow(
-    'lon:' + e.point.lng + '\n' + 'lat :' + e.point.lat + '\n' +
-    'resx:' + e.point.resx + '\n' + 'resy:' + e.point.resy
+    'lon :' + e.point.olng + '\t' + 'lat :' + e.point.olat + '\t' +
+    'resx:' + e.point.resx + '\t' + 'resy:' + e.point.resy
     ,opts);
 
     map.openInfoWindow(infoWindow,e.point);
