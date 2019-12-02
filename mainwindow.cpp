@@ -11,8 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //mpMap->load(QUrl("file:/media/tu/Work/GitHub/TrackDisplay/map.html"));
     QString str = QCoreApplication::applicationDirPath();
-    mpMap->load(QUrl(str + "/map.html")); //"file:///./map.html"));
-//    QUrl::fromLocalFile("file:///./map.html");
+    mpMap->load(QUrl("file:///"+ str + "/../map.html"));
     QSize sz = ui->bkWidget->size();
     mpMap->setGeometry(0,25,sz.width(),sz.height());
 
@@ -84,7 +83,7 @@ void MainWindow::GetImage(const QString &str)
 
                 pathDialog->setFileMode(QFileDialog::DirectoryOnly);
 
-                pathDialog->setDirectory("../../");
+                pathDialog->setDirectory("../../../Datas");
 
                 if((QDialog::Accepted == pathDialog->exec()))
                 {
@@ -174,7 +173,7 @@ void MainWindow::DistanceToolSwitch()
 void MainWindow::OpenDir()
 {
     QFileDialog *filedialog = new QFileDialog(this);
-
+    filedialog->setDirectory("/media/tu/Work/Datas/TracePath");
 
     if(mBol > 0)
     {
@@ -187,7 +186,6 @@ void MainWindow::OpenDir()
         ui->btnLoad->setText("LoadReal");
     }
 
-    filedialog->setDirectory("../");
     if(filedialog->exec() == QDialog::Accepted)
     {
         QString path = filedialog->selectedFiles()[0];
