@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     mpMap = new QWebEngineView(ui->bkWidget);
 
-    mpMap->load(QUrl("file:///media/navinfo/Bak/CPP/QT/TrackDisplay/map.html"));
-
+    //mpMap->load(QUrl("file:/media/tu/Work/GitHub/TrackDisplay/map.html"));
+    QString str = QCoreApplication::applicationDirPath();
+    mpMap->load(QUrl(str + "/map.html")); //"file:///./map.html"));
+//    QUrl::fromLocalFile("file:///./map.html");
     QSize sz = ui->bkWidget->size();
     mpMap->setGeometry(0,25,sz.width(),sz.height());
 
