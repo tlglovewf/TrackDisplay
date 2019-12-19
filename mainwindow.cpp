@@ -207,6 +207,9 @@ void MainWindow::OpenDir()
             {
                 std::string str;
                 getline(file,str);
+                if(str.empty())
+                    continue;
+
                 double lat,lon;
                 int fname;
                 char temp[10] = {0};

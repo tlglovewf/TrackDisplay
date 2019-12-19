@@ -55,6 +55,7 @@ function clearOverlay()
 var realtrack = [];   //truth    point
 var esttrack  = [];   //estimate point
 var premarker;
+var link_line;
 function drawcurrentpt( index_str )
 {//point select
 
@@ -72,10 +73,10 @@ function drawcurrentpt( index_str )
         if( esttrack[i].id == index )
         {
             var infoWindow = new BMap.InfoWindow(
-                                      'lon:' + esttrack[i].lng + '\n' +
-                                      'lat:' + esttrack[i].lat + '\n' +
-                                      'resx' + esttrack[i].resx+ '\n' +
-                                      'resy' + esttrack[i].resy
+                                      'lon:'  + esttrack[i].lng + '\n' +
+                                      'lat:'  + esttrack[i].lat + '\n' +
+                                      'resx:' + esttrack[i].resx+ '\n' +
+                                      'resy:' + esttrack[i].resy+ '\n'
                                       ,opts);
 
             map.openInfoWindow(infoWindow,esttrack[i]);
@@ -83,11 +84,29 @@ function drawcurrentpt( index_str )
             if(premarker != null)
                 map.removeOverlay(premarker);
 
+            if(link_line != null)
+                map.removeOverlay(link_line);
+
             var marker = new BMap.Marker(esttrack[i]);
 
             map.addOverlay(marker);
 
             premarker = marker;
+
+
+            var linkline = [];
+            linkline.push(realtrack[i]);
+            linkline.push(esttrack[i]);
+            link_line =new BMap.Polyline(linkline, {
+                            enableEditing: false,//是否启用线编辑，默认为false
+                            enableClicking: false,//是否响应点击事件，默认为true
+                            strokeWeight:'1',//折线的宽度，以像素为单位
+                            strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
+                            strokeColor:"red" //折线颜色
+                            });
+            map.addOverlay(link_line);         //增加折线
+
+            break;
         }
     }
 }
